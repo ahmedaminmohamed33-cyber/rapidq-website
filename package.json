@@ -1,0 +1,20 @@
+{
+  "name": "rapidq-backend",
+  "version": "1.0.0",
+  "description": "RapidQ Clinic Smart Queuing System – Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "clinic",
+    "queue",
+    "rapidq"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
