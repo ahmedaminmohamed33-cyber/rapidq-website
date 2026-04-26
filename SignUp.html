@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sign Up</title>
+</head>
+
+<body>
+
+<h2>RapidQ</h2>
+
+<button onclick="showPatient()">Patient</button>
+<button onclick="showDoctor()">Doctor</button>
+
+<form id="form" action="Home.html">
+    <label>First Name</label><br>
+<input type="text" placeholder=" Enter First Name" required><br><br>
+    <label>Last Name</label><br>
+<input type="text" placeholder="Enter Last Name" required><br><br>
+    <label>Email</label><br>
+<input type="email" placeholder="Enter Your Email" required><br><br>
+    <label>Password</label><br>
+<input type="password" placeholder="Enter Your Password" required><br><br>
+    <label>Password Confirmation </label><br>
+<input type="password" placeholder="Confirm Your Password" required><br><br>
+
+<div id="extra"></div>
+
+<button type="submit">Register</button>
+</form>
+
+<script>
+function showPatient(){
+document.getElementById("extra").innerHTML="";
+}
+
+function showDoctor(){
+document.getElementById("extra").innerHTML=
+'<label>Specialization</label><br>' +
+'<input type="text" placeholder="Enter Your Specialization" required ><br><br>';
+}
+</script>
+
+</body>
+</html>
