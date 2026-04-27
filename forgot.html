@@ -4,7 +4,6 @@
 <title>Forget Password</title>
 
 <style>
-/* التعديل على الـ body لضمان السنترة الكاملة */
 body {
     background-color: #E4F1FA;
     font-family: 'Poppins', sans-serif;
@@ -53,6 +52,17 @@ input[type="password"] {
     box-sizing: border-box;
     outline: none;
 }
+input[type="email"] {
+    width: 100%;
+    padding: 15px 25px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 50px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    outline: none;
+}
 
 button[type="submit"] {
     width: 160px;
@@ -78,6 +88,9 @@ button[type="submit"] {
 
         <div class="form-card">
             <form>
+                <div class="input-group">
+                    <input type="email" required placeholder="Enter Email" >
+                </div>
                 <div class="input-group">
                     <input type="password" required placeholder="Current Password" minlength="8">
                 </div>
