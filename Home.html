@@ -88,8 +88,8 @@
 
            .hero-image {
     position: relative;
-    width: 420px;
-    height: 500px;
+    width: 320px;
+    height: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,8 +99,8 @@
 .hero-image::before {
     content: '';
     position: absolute;
-    width: 590px;
-    height: 630px;
+    width: 490px;
+    height: 530px;
     background-color: #ffffff;
     border-radius: 120px;
     transform: rotate(10deg);
@@ -110,13 +110,79 @@
 
 .hero-image img {
     position: relative;
-    height: 1150px;
+    height: 950px;
     width: auto;
     object-fit: cover;
     z-index: 1;
     margin-top: 250px;
     pointer-events: none;
 }
+ .section-doctors {
+            max-width: 1400px;
+            margin: 80px auto 60px;
+            padding: 0 56px;
+            text-align: center;
+             font-family: 'Poppins', sans-serif;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+             font-family: 'Poppins', sans-serif;
+        }
+
+        .section-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 16px;
+             font-family: 'Poppins', sans-serif;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: var(--gray);
+            max-width: 680px;
+            margin: 0 auto 50px;
+            line-height: 1.9;
+             font-family: 'Poppins', sans-serif;
+        }
+
+        .doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .doctor-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .doctor-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            object-position: top;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .doctor-name-badge {
+            background-color: var(--primary);
+            color: #0573E4;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 12px 0;
+            border-radius: 50px;
+            width: 100%;
+            text-align: center;
+             font-family: 'Poppins', sans-serif;
+        }
            </style>
                         </head>
                         <body>
@@ -132,9 +198,7 @@
                                 <a href="Contact.html">Contact</a>
                                 <a href="Pricing.html">Plans</a>
                             </div>
-                            <a href="LogIn.html">
-                                <button type="button" class="btn-login">Login</button>
-                                 </a>
+                           <button id="authBtn" class="btn-login" onclick="handleAuth()">Login</button>
                         </nav>
 
                         <section class="hero">
@@ -152,6 +216,65 @@
                                 <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png" alt="Doctor Image">
                             </div>
                         </section>
+
+<section class="section-doctors">
+    <p class="section-subtitle">Quick &amp; Easy Booking</p>
+    <h2 class="section-title">Committed to Your Time</h2>
+    <p class="section-desc">
+        We connect you with top-rated medical professionals through a seamless booking experience.
+        No more long queues or phone calls—just expert care when you need it.
+    </p>
+    <div class="doctors-grid">
+        <div class="doctor-card">
+            <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png" >
+            <div class="doctor-name-badge">Dr. Ahmed Ali</div>
+        </div>
+        <div class="doctor-card">
+            <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png" alt="Dr. Omar Hassan">
+            <div class="doctor-name-badge">Dr. Omar Hassan</div>
+        </div>
+        <div class="doctor-card">
+            <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png" alt="Dr. Mohamed Salama">
+            <div class="doctor-name-badge">Dr. Mohamed Salama</div>
+        </div>
+        <div class="doctor-card">
+            <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png" alt="Dr. Ahmed El-Haggar">
+            <div class="doctor-name-badge">Dr. Ahmed El-Haggar</div>
+        </div>
+    </div>
+</section>
+
+
+
+                        <script>
+function checkLogin() {
+    let isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn === "true") {
+        document.getElementById("authBtn").innerText = "Logout";
+    } else {
+        document.getElementById("authBtn").innerText = "Login";
+    }
+}
+
+function handleAuth() {
+    let isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn === "true") {
+        // Logout
+        localStorage.setItem("isLoggedIn", "false");
+        window.location.href = "Home.html";
+    } else {
+        // يروح لصفحة اللوجين
+        window.location.href = "LogIn.html";
+    }
+}
+
+// يتنفذ أول ما الصفحة تفتح
+checkLogin();
+</script>
+
+
 
                         </body>
                         

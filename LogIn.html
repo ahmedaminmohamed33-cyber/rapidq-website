@@ -135,7 +135,7 @@
     <button onclick="setActive(this)">Doctor</button>
   </div>
 
-  <form action="Home.html">
+ <form onsubmit="login(event)">
     <div class="content">
       <input type="email" required placeholder="Enter your email">
       <input type="password" required placeholder="Enter your password" minlength="8">
@@ -158,6 +158,16 @@
         btn.classList.add('active');
     }
   </script>
+  <script>
+function login(event) {
+    event.preventDefault();
+
+    // هنا نعتبر إنه عمل لوجين
+    localStorage.setItem("isLoggedIn", "true");
+
+    window.location.href = "Home.html";
+}
+</script>
 
 </body>
 </html>
