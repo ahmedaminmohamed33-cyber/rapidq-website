@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapidQ - Select Payment Method</title>
+    <!-- استدعاء الخطوط المستخدمة في التصميم[cite: 1] -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #E4F1FA; 
+            --primary-blue: #007bff; 
+            --white: #ffffff;
+            --black: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .payment-wrapper {
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+        }
+
+        .header-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+        }
+
+        .logo-img {
+            width: 160px;
+            height: auto;
+        }
+
+        .form-title {
+            font-weight: 900; 
+            color: var(--black);
+            font-size: 42px; 
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            font-weight: 600; 
+            color: var(--primary-blue);
+            font-size: 16px;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .method-card {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--black);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 2px solid transparent;
+        }
+
+        .method-card:hover {
+           
+            border-color: var(--primary-blue);
+            
+        }
+
+        .method-name {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .arrow-icon {
+            color: var(--primary-blue);
+            font-weight: 900;
+            font-size: 20px;
+        }
+
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 40px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px; 
+            font-weight: 600;
+            
+        }
+
+        .back-btn:hover {
+            color: var(--primary-blue); 
+        }
+
+        @media (max-width: 768px) {
+            .header-logo {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 35px;
+                display: flex;
+                justify-content: center;
+            }
+            .form-title {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-logo">
+    <a href="Home.html">
+            <img src="images/logo.svg" alt="RapidQ Logo" class="logo-img">
+        </a>
+    </header>
+
+    <main class="payment-wrapper">
+        <h1 class="form-title">Payment Method</h1>
+        <span class="form-subtitle">Choose how you want to pay</span>
+
+        <div class="payment-options">
+            
+            <a href="Master-visa-meza.html" class="method-card">
+                <span class="method-name">Visa / Mastercard / Meeza</span>
+                <span class="arrow-icon">→</span>
+            </a>
+
+            <a href="instapay.html" class="method-card">
+                <span class="method-name">InstaPay</span>
+                <span class="arrow-icon">→</span>
+            </a>
+
+        </div>
+
+        <a href="Booking.html" class="back-btn">← Back to Appointment</a>
+    </main>
+
+</body>
+</html>

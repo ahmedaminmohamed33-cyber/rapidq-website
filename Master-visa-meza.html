@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapidQ - Secure Payment</title>
+    <!-- استدعاء الخطوط[cite: 1] -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #E4F1FA; 
+            --primary-blue: #007bff; 
+            --input-bg: #ffffff;
+            --black: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .payment-wrapper {
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+        }
+
+        .header-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+        }
+
+        .logo-link {
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logo-img {
+            width: 160px;
+            height: auto;
+        }
+
+        .form-title {
+            font-weight: 900; 
+            color: var(--black);
+            font-size: 48px; 
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+        }
+
+        .form-subtitle {
+            font-weight: 600; 
+            color: var(--primary-blue);
+            font-size: 15px;
+            margin-top: 15px;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        .input-container {
+            margin-bottom: 18px; 
+            width: 100%;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px 28px;
+            border: none;
+            border-radius: 50px; 
+            background-color: var(--input-bg);
+            font-size: 15px;
+            font-weight: 400;
+            color: #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            outline: none;
+        }
+
+       
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 7px 20px rgba(0, 123, 255, 0.3);
+            margin-top: 10px;
+        }
+
+        .btn-confirm:hover {
+            background-color: #0056b3;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px; 
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            color: var(--primary-blue); /* يتحول للأزرق عند تمرير الماوس */
+        }
+
+        /* تعديلات الموبايل[cite: 1] */
+        @media (max-width: 768px) {
+            .header-logo {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 35px;
+                display: flex;
+                justify-content: center;
+            }
+            .form-title {
+                font-size: 42px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-logo">
+        <a href="Home.html" class="logo-link">
+            <img src="images/logo.svg" alt="RapidQ Logo" class="logo-img">
+        </a>
+    </header>
+
+    <main class="payment-wrapper">
+        <h1 class="form-title">Payment Details</h1>
+        <span class="form-subtitle">Complete your appointment booking</span>
+
+        <form>
+            <div class="input-container">
+                <input type="text" placeholder="Cardholder Name" required>
+            </div>
+
+            <div class="input-container">
+                <input type="text" placeholder="Card Number" maxlength="19" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+            </div>
+
+            <div class="row">
+                <div class="input-container" style="flex: 1;">
+                    <input type="text" placeholder="MM / YY" maxlength="5" oninput="this.value = this.value.replace(/[^0-9/]/g, '')" required>
+                </div>
+                <div class="input-container" style="flex: 1;">
+                    <input type="text" placeholder="CVV" maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                </div>
+            </div>
+            <a href="Master-visa-meza.html">
+            <button type="submit" class="btn-confirm">Pay Now</button>
+            </a>
+        </form>
+
+        <a href="Payment-Method.html" class="back-btn">← Back to Methods</a>
+    </main>
+
+</body>
+</html>

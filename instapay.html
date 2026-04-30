@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapidQ - InstaPay Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #E4F1FA; 
+            --primary-blue: #007bff; 
+            --white: #ffffff;
+            --black: #000000;
+            --gray: #666;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .payment-wrapper {
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+        }
+
+        .header-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+
+        .logo-img {
+            width: 160px;
+            height: auto;
+        }
+
+        .form-title {
+            font-weight: 900; 
+            color: var(--black);
+            font-size: 48px; 
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+        }
+
+        .form-subtitle {
+            font-weight: 600; 
+            color: var(--primary-blue);
+            font-size: 15px;
+            margin-top: 15px;
+            margin-bottom: 35px;
+            display: block;
+        }
+
+        .transfer-card {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 40px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .transfer-label {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .transfer-number {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--black);
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .copy-btn {
+            background-color: #f0f7ff;
+            color: var(--primary-blue);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 50px; 
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 7px 20px rgba(0, 123, 255, 0.3);
+            margin-top: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px; 
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            color: var(--primary-blue); 
+        }
+
+        .instructions {
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .header-logo {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 35px;
+                display: flex;
+                justify-content: center;
+            }
+            .form-title { font-size: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-logo">
+            <a href="Home.html">
+            <img src="images/logo.svg" alt="RapidQ Logo" class="logo-img">
+            </a>
+    </header>
+
+    <main class="payment-wrapper">
+        <h1 class="form-title">InstaPay</h1>
+        <span class="form-subtitle">Transfer to the number below</span>
+
+        <div class="transfer-card">
+            <span class="transfer-label">Phone Number / IPA</span>
+            <span class="transfer-number" id="payNumber">01012345678</span>
+            <button class="copy-btn" onclick="copyNumber()">Copy Number</button>
+        </div>
+
+        <p class="instructions">
+            Please transfer the exact amount to the number above via <strong>InstaPay</strong>, then click confirm.
+        </p>
+        <a href="Home.html">
+        <button class="btn-confirm">I've Sent the Money</button>
+        </a>
+
+
+        <a href="Payment-Method.html" class="back-btn">← Back to Methods</a>
+    </main>
+
+    <script>
+        function copyNumber() {
+            const num = document.getElementById('payNumber').innerText;
+            navigator.clipboard.writeText(num);
+            alert("Number copied: " + num);
+        }
+    </script>
+
+</body>
+</html>

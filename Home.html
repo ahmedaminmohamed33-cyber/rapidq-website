@@ -261,20 +261,15 @@ function handleAuth() {
     let isLoggedIn = localStorage.getItem("isLoggedIn");
 
     if (isLoggedIn === "true") {
-        // Logout
+        
         localStorage.setItem("isLoggedIn", "false");
         window.location.href = "Home.html";
     } else {
-        // يروح لصفحة اللوجين
         window.location.href = "LogIn.html";
     }
 }
 
-// يتنفذ أول ما الصفحة تفتح
 checkLogin();
 </script>
-
-
-
                         </body>
                         
