@@ -2,34 +2,197 @@
 <html>
 <head>
 <title>Book Appointment</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style> 
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.page {
+    font-family: 'Poppins', sans-serif;
+    background: #E4F1FA;
+}
+
+/* Layout */
+.container {
+    display: flex;
+    height: 100vh;
+    padding: 40px 60px;
+}
+
+/* LEFT SIDE */
+.left {
+    flex: 1;
+    position: relative;
+}
+
+.logo {
+    width: 120px;
+    margin-bottom: 40px;
+}
+
+.doctor {
+    width: 350px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+/* RIGHT SIDE */
+.right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Titles */
+.brand {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.sub {
+    color: #2F80ED;
+    letter-spacing: 2px;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 64px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+.home-btn {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    background: white;
+    color: #2F80ED;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.home-btn:hover {
+    background: #2F80ED;
+    color: white;
+}
+/* FORM */
+.form {
+    max-width: 500px;
+}
+
+.row {
+    display: flex;
+    gap: 20px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #1A1A1A;
+}
+
+input {
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: #F3F6F9;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Button */
+.btn {
+    margin-top: 20px;
+    padding: 14px;
+    width: 180px;
+    border: none;
+    border-radius: 25px;
+    background: #2F80ED;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #1366d6;
+}
+</style> 
 </head>
 
-<body>
-<h2>RapidQ</h2>
+<body class="page">
 
-<h2>Book an Appointment</h2>
+<div class="container">
+<a href="Home.html" class="home-btn">Home</a>
+    <div class="left">
+        <img src="images/logo.svg" class="logo">
+        <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png" class="doctor">
+    </div>
 
-<form>
-        <label>First Name</label><br>
-    <input type="text" placeholder="Enter Your First Name" required><br><br>
+    <div class="right">
+        <h2 class="brand">RapidQ</h2>
 
-    <label>Last Name</label><br>
-<input type="text" placeholder=" Enter Your Last Name" required><br><br>
+        <p class="sub">BOOK AN</p>
+        <h1 class="title">Appointment</h1>
 
-    <label>Email</label><br>
-<input type="email" placeholder=" Enter Your Email" required><br><br>
+        <form class="form">
+            <div class="row">
+                <div class="field">
+                    <label>First Name</label>
+                    <input type="text" placeholder="Enter your First Name" required>
+                </div>
 
-    <label>Phone Number</label><br>
-<input type="text" placeholder=" Enter Your Phone Number" required><br><br>
+                <div class="field">
+                    <label>Last Name</label>
+                    <input type="text" placeholder="Enter your Last Name" required>
+                </div>
+            </div>
 
-<label>Date</label><br>
-<input type="date" required><br><br>
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="text" placeholder="Enter your phone number" required>
+            </div>
 
-<label>Time</label><br>
-<input type="time" required><br><br>
+            <div class="field">
+                <label>Email Address</label>
+                <input type="email" placeholder="Enter your email" required>
+            </div>
 
-<button>Submit</button>
-</form>
+            <div class="row">
+                <div class="field">
+                    <label>Preferred Date</label>
+                    <input type="date" required>
+                </div>
+
+                <div class="field">
+                    <label>Preferred Time</label>
+                    <input type="time" required>
+                </div>
+            </div>
+
+            <button class="btn">Submit →</button>
+        </form>
+    </div>
+
+</div>
 
 </body>
 </html>
