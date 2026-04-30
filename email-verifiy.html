@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forgot Password</title>
+
+  <!-- Poppins Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #E4F1FA;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      width: 350px;
+    }
+
+    .logo {
+      width: 160px;
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .input-field {
+      width: 100%;
+      height: 55px;
+      border-radius: 30px;
+      border: none;
+      padding: 0 20px;
+      font-size: 14px;
+      background-color: #F5F5F5;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      width: 100%;
+      height: 55px;
+      border-radius: 30px;
+      border: none;
+      background: linear-gradient(90deg, #1D73D6, #0E5ECF);
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <img src="images/logo.svg" class="logo" />
+
+    <h2>Forgot Password</h2>
+    <p>Enter your email to receive a verification code</p>
+
+    <input 
+      type="email" 
+      id="email" 
+      class="input-field" 
+      placeholder="Enter your email"
+    >
+
+    <button class="btn" onclick="goToVerification()">Continue</button>
+  </div>
+
+  <script>
+    function goToVerification() {
+      const email = document.getElementById("email").value.trim();
+
+      if (!email) {
+        alert("Please enter your email");
+        return;
+      }
+
+      // ممكن هنا تبعتي الإيميل لـ API قبل الانتقال
+
+      // انتقال لصفحة الـ verification
+      window.location.href = "verifiy.html?email=" + encodeURIComponent(email);
+    }
+  </script>
+
+</body>
+</html>
