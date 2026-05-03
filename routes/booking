@@ -1,0 +1,25 @@
+const express  = require("express");
+const router   = express.Router();
+
+const bookings = [];
+
+router.post("/book", (req, res) => {
+  const token = req.headers["authorization"];
+
+  if (!token) {
+    return res.status(401).json({ ok: false, message: "Please log in to book." });
+  }
+
+  const { firstName, lastName, phone, email, date, time } = req.body;
+
+  if (!firstName || !lastName || !phone || !email || !date || !time) {
+    return res.status(400).json({ ok: false, message: "All fields are required." });
+  }
+
+  bookings.push({ id: bookings.length + 1, firstName, lastName, phone, email, date, time });
+  console.log("New booking:", firstName, date, time);
+
+  res.json({ ok: true, message: "Appointment booked!" });
+});
+
+module.exports = router;
