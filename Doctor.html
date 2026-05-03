@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>RapidQ</title>
-
-  <!-- Poppins Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -19,7 +17,6 @@ body {
   background-color: #E4F1FA;
 }
 
-/* Navbar */
 .navbar {
   padding: 20px 60px;
   display: flex;
@@ -49,10 +46,10 @@ body {
 }
 
 .logo img {
-width: 120px;
-    margin-bottom: 40px;}
+  width: 120px;
+  margin-bottom: 40px;
+}
 
-/* Filters */
 .filters {
   margin: 30px auto;
   width: 80%;
@@ -72,16 +69,15 @@ width: 120px;
   font-size: 14px;
 }
 
-/* Cards Layout */
 .cards {
   width: 80%;
   margin: auto;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 25px;
+  padding-bottom: 40px;
 }
 
-/* Card */
 .card {
   background: #F5F5F5;
   border-radius: 16px;
@@ -95,7 +91,6 @@ width: 120px;
   width: 140px;
 }
 
-/* Card Info */
 .card-info h3 {
   color: #0A2540;
   font-weight: 600;
@@ -118,7 +113,6 @@ width: 120px;
   margin-bottom: 10px;
 }
 
-/* Button */
 button {
   background: #1E88E5;
   color: white;
@@ -132,107 +126,183 @@ button {
 button:hover {
   background: #1565C0;
 }
+
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  font-size: 16px;
+  padding: 40px;
+}
 </style>
 
 </head>
 <body>
+
   <!-- Navbar -->
   <header class="navbar">
-  <div class="logo">
-        <a href="Home.html">
-    <img src="images/logo.svg" alt="RapidQ">
-        </a>
-  </div>
-<a href="Home.html">
-  <button class="home-btn">Home</button>
-  </a>
-</header>
+    <div class="logo">
+      <a href="Home.html">
+        <img src="images/logo.svg" alt="RapidQ">
+      </a>
+    </div>
+    <a href="Home.html">
+      <button class="home-btn">Home</button>
+    </a>
+  </header>
 
   <!-- Filters -->
   <section class="filters">
     <input id="searchInput" type="text" placeholder="search by name or specialty...">
-
     <select id="specialityFilter">
-      <option>All Specialties</option>
-      <option>Cardiology</option>
-      <option>Neurology</option>
-      <option>Dentistry</option>
+      <option value="all">All Specialties</option>
+      <option value="Cardiology">Cardiology</option>
+      <option value="Neurology">Neurology</option>
+      <option value="Dentistry">Dentistry</option>
     </select>
-
     <select id="ratingSort">
-      <option>Sort by Rating</option>
-      <option>⭐ 4.7</option>
-      <option>⭐ 4.8</option>
-      <option>⭐ 4.9</option>
-      <option>⭐ 5.0</option>
+      <option value="none">Sort by Rating</option>
+      <option value="asc">Low to High</option>
+      <option value="desc">High to Low</option>
     </select>
-
     <select id="priceSort">
-      <option>Sort by Price</option>
-      <option>400</option>
-      <option>500</option>
-      <option>600</option>
-      <option>700</option>
+      <option value="none">Sort by Price</option>
+      <option value="asc">Low to High</option>
+      <option value="desc">High to Low</option>
     </select>
   </section>
 
-  <!-- Doctors -->
-  <section class="cards">
+  <!-- Doctors Cards will be injected here by JS -->
+  <section class="cards" id="cardsContainer"></section>
 
-    <!-- Card -->
-    <div class="card" id="cardsContainer">
-      <div class="card-info">
-        <h3>Dr. Ahmed Ali</h3>
-        <p class="specialty">Cardiology</p>
-        <p class="rating">⭐ 4.8</p>
-        <p class="price">300 EGP</p>
-       <a href="Booking.html">
-        <button>Book Now</button>
-        </a>
-      </div>
-      <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png">
-    </div>
 
-    <div class="card">
-      <div class="card-info">
-        <h3>Dr. Omar Hassan</h3>
-        <p class="specialty">Neurology</p>
-        <p class="rating">⭐ 5</p>
-        <p class="price">600 EGP</p>
-        <a href="Booking.html">
-        <button>Book Now</button>
-        </a>   
-    </div>
-      <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png">
-    </div>
+  <script>
+    // =========================================
+    // STEP 1: Doctor Class (Blueprint for each doctor)
+    // =========================================
+    class Doctor {
+      constructor(name, specialty, rating, price, image, profilePage) {
+        this.name = name;
+        this.specialty = specialty;
+        this.rating = rating;
+        this.price = price;
+        this.image = image;
+        this.profilePage = profilePage;
+      }
 
-    <div class="card">
-      <div class="card-info">
-        <h3>Dr. Mohamed Salama</h3>
-        <p class="specialty">Dentistry</p>
-        <p class="rating">⭐ 4.9</p>
-        <p class="price">500 EGP</p>
-        <a href="Booking.html">
-        <button>Book Now</button>
-        </a>
-      </div>
-      <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png">
-    </div>
+      // This method builds the HTML card for this doctor
+      renderCard() {
+        return `
+          <div class="card">
+            <div class="card-info">
+              <h3>${this.name}</h3>
+              <p class="specialty">${this.specialty}</p>
+              <p class="rating">⭐ ${this.rating}</p>
+              <p class="price">${this.price} EGP</p>
+              <a href="Booking.html">
+                <button>Book Now</button>
+              </a>
+            </div>
+            <a href="${this.profilePage}"><img src="${this.image}" alt="${this.name}" style="cursor:pointer;"></a>
+          </div>
+        `;
+      }
+    }
 
-    <div class="card">
-      <div class="card-info">
-        <h3>Dr. Ahmed El-Haggar</h3>
-        <p class="specialty">Cardiology</p>
-        <p class="rating">⭐ 4.7</p>
-        <p class="price">500 EGP</p>
-        <a href="Booking.html">
-        <button>Book Now</button>
-        </a>
-      </div>
-      <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png">
-    </div>
 
-  </section>
+    // =========================================
+    // STEP 2: DoctorList Class (Manages all doctors)
+    // =========================================
+    class DoctorList {
+      constructor(doctors) {
+        this.doctors = doctors;
+      }
+
+      getFiltered(searchText, specialty, ratingSort, priceSort) {
+        let result = [...this.doctors];
+
+        if (searchText !== "") {
+          result = result.filter(doc =>
+            doc.name.toLowerCase().includes(searchText) ||
+            doc.specialty.toLowerCase().includes(searchText)
+          );
+        }
+
+        if (specialty !== "all") {
+          result = result.filter(doc => doc.specialty === specialty);
+        }
+
+        if (ratingSort === "asc") {
+          result.sort((a, b) => a.rating - b.rating);
+        } else if (ratingSort === "desc") {
+          result.sort((a, b) => b.rating - a.rating);
+        }
+
+        if (priceSort === "asc") {
+          result.sort((a, b) => a.price - b.price);
+        } else if (priceSort === "desc") {
+          result.sort((a, b) => b.price - a.price);
+        }
+
+        return result;
+      }
+    }
+
+
+    // =========================================
+    // STEP 3: Your Doctor Data
+    // =========================================
+    const allDoctors = new DoctorList([
+      new Doctor("Dr. Ahmed Ali",      "Cardiology", 4.8, 300, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "AhmedAli-Profile.html"),
+      new Doctor("Dr. Omar Hassan",    "Neurology",  5.0, 600, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "Omar-Profile.html"),
+      new Doctor("Dr. Mohamed Salama", "Dentistry",  4.9, 500, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "Mohamed-Profile.html"),
+      new Doctor("Dr. Ahmed El-Haggar","Cardiology", 4.7, 500, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "AhmedElhaggar-Profile.html"),
+    ]);
+
+
+    // =========================================
+    // STEP 4: Display Function
+    // =========================================
+    function displayDoctors(doctors) {
+      const container = document.getElementById("cardsContainer");
+
+      if (doctors.length === 0) {
+        container.innerHTML = `<p class="no-results">No doctors found.</p>`;
+        return;
+      }
+
+      container.innerHTML = doctors.map(doc => doc.renderCard()).join("");
+    }
+
+
+    // =========================================
+    // STEP 5: applyFilters
+    // =========================================
+    function applyFilters() {
+      const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
+      const specialty  = document.getElementById("specialityFilter").value;
+      const ratingSort = document.getElementById("ratingSort").value;
+      const priceSort  = document.getElementById("priceSort").value;
+
+      const filtered = allDoctors.getFiltered(searchText, specialty, ratingSort, priceSort);
+      displayDoctors(filtered);
+    }
+
+
+    // =========================================
+    // STEP 6: Event Listeners
+    // =========================================
+    document.getElementById("searchInput").addEventListener("input", applyFilters);
+    document.getElementById("specialityFilter").addEventListener("change", applyFilters);
+    document.getElementById("ratingSort").addEventListener("change", applyFilters);
+    document.getElementById("priceSort").addEventListener("change", applyFilters);
+
+
+    // =========================================
+    // STEP 7: Initial Load
+    // =========================================
+    displayDoctors(allDoctors.doctors);
+  </script>
 
 </body>
 </html>

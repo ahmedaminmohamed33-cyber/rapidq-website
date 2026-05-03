@@ -153,30 +153,71 @@
         <h1 class="form-title">Payment Details</h1>
         <span class="form-subtitle">Complete your appointment booking</span>
 
-        <form>
+        <form id="paymentForm">
+            
             <div class="input-container">
-                <input type="text" placeholder="Cardholder Name" required>
+                <input type="text" id="cardName" placeholder="Cardholder Name" required>
             </div>
 
             <div class="input-container">
-                <input type="text" placeholder="Card Number" maxlength="19" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                <input type="text" id="cardNumber" placeholder="Card Number" maxlength="19" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
             </div>
 
             <div class="row">
                 <div class="input-container" style="flex: 1;">
-                    <input type="text" placeholder="MM / YY" maxlength="5" oninput="this.value = this.value.replace(/[^0-9/]/g, '')" required>
+                    <input type="text" id="cardExpiry" placeholder="MM / YY" maxlength="5" oninput="this.value = this.value.replace(/[^0-9/]/g, '')" required>
                 </div>
                 <div class="input-container" style="flex: 1;">
-                    <input type="text" placeholder="CVV" maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    <input type="text" id="cardCVV" placeholder="CVV" maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                 </div>
             </div>
             <a href="Master-visa-meza.html">
-            <button type="submit" class="btn-confirm">Pay Now</button>
+            <button type="submit" id="payBtn" class="btn-confirm">Pay Now</button>
             </a>
         </form>
 
         <a href="Payment-Method.html" class="back-btn">← Back to Methods</a>
     </main>
+<script>
+  class CardPayment {
+    constructor() {
+      this.form    = document.getElementById("paymentForm");
+      this.name    = document.getElementById("cardName");
+      this.number  = document.getElementById("cardNumber");
+      this.expiry  = document.getElementById("cardExpiry");
+      this.cvv     = document.getElementById("cardCVV");
+      this.payBtn  = document.getElementById("payBtn");
+    }
 
+    validate() {
+      if (this.name.value.trim() === "") {
+        alert("Please enter the cardholder name."); return false;
+      }
+      if (this.number.value.length < 16) {
+        alert("Please enter a valid 16-digit card number."); return false;
+      }
+      if (this.expiry.value.length < 5) {
+        alert("Please enter a valid expiry date (MM/YY)."); return false;
+      }
+      if (this.cvv.value.length < 3) {
+        alert("Please enter a valid CVV."); return false;
+      }
+      return true;
+    }
+
+    pay() {
+      if (!this.validate()) return;
+      alert("✅ Payment successful! Booking confirmed.");
+      window.location.href = "Home.html";
+    }
+
+    listen() {
+      this.payBtn.addEventListener("click", () => this.pay());
+    }
+  }
+
+  const payment = new CardPayment();
+  payment.listen();
+</script>
 </body>
 </html>

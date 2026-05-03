@@ -145,12 +145,12 @@
 
         <div class="payment-options">
             
-            <a href="Master-visa-meza.html" class="method-card">
+            <a href="Master-visa-meza.html" class="method-card" id="visaCard">
                 <span class="method-name">Visa / Mastercard / Meeza</span>
                 <span class="arrow-icon">→</span>
             </a>
 
-            <a href="instapay.html" class="method-card">
+            <a href="instapay.html" class="method-card" id="instaCard">
                 <span class="method-name">InstaPay</span>
                 <span class="arrow-icon">→</span>
             </a>
@@ -159,6 +159,44 @@
 
         <a href="Booking.html" class="back-btn">← Back to Appointment</a>
     </main>
+<script>
+  // =============================================
+  // Class responsible for handling payment choice
+  // =============================================
+  class PaymentMethod {
+    constructor(id, name, url) {
+      this.id   = id;
+      this.name = name;
+      this.url  = url;
+    }
 
+    // Save the chosen method and go to its page
+    select() {
+      localStorage.setItem("selectedPayment", this.name);
+      window.location.href = this.url;
+    }
+
+    // Attach a click listener to its card
+    listen() {
+      const card = document.getElementById(this.id);
+      card.addEventListener("click", (e) => {
+        e.preventDefault();       // stop the normal link
+        this.select();            // run our method instead
+      });
+    }
+  }
+
+  // =============================================
+  // Create one object per payment method
+  // =============================================
+  const visa    = new PaymentMethod("visaCard",  "Visa/Mastercard/Meeza", "Master-visa-meza.html");
+  const instaPay = new PaymentMethod("instaCard", "InstaPay",              "instapay.html");
+
+  // =============================================
+  // Start listening for clicks
+  // =============================================
+  visa.listen();
+  instaPay.listen();
+</script>
 </body>
 </html>

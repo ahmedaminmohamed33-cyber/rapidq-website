@@ -30,3 +30,26 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
     console.log("Server running on http://localhost:3000");
 });
+// Queue data
+let queueData = {
+  clinicName: "Dr. Ahmed Clinic",
+  clinicLocation: "Smouha, Alexandria",
+  status: "On Track",
+  avgTimePerPatient: 5,
+  yourNumber: 27,
+  nowServing: 20,
+};
+
+// GET queue info
+app.get('/api/queue', (req, res) => {
+  const patientsAhead = queueData.yourNumber - queueData.nowServing;
+  const estimatedWait = patientsAhead * queueData.avgTimePerPatient;
+  res.json({ success: true, ...queueData, patientsAhead, estimatedWait });
+});
+
+// POST cancel booking
+app.post('/api/cancel', (req, res) => {
+  res.json({ success: true, message: "Booking cancelled!" });
+});
+const queueRoutes = require('./routes/queue');
+app.use('/api/queue', queueRoutes);

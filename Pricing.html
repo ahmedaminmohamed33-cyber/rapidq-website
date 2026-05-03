@@ -231,10 +231,7 @@
         ✔️ Email alerts
         </li>
       </ul>
-      <button type="button" class="btn-get-started">
-        Get Started
-        </svg>
-      </button>
+      <button type="button" class="btn-get-started" id="basicBtn">Get Started</button>
     </div>
   </div>
 
@@ -259,9 +256,7 @@
          ✔️ Multi-doctor support
         </li>
       </ul>
-      <button class="btn-get-started">
-        Get Started
-      </button>
+      <button type="button" class="btn-get-started" id="premiumBtn">Get Started</button>
     </div>
   </div>
 
@@ -276,6 +271,42 @@
   <img src="images/Meeza.png"    alt="Meeza"      class="payment-img">
   
 </div>
+<script>
+  // =============================================
+  // Class that represents one pricing plan
+  // =============================================
+  class Plan {
+    constructor(id, name, price, page) {
+      this.id    = id;
+      this.name  = name;
+      this.price = price;
+      this.page  = page;
+    }
 
+    // Save chosen plan and go to payment page
+    select() {
+      localStorage.setItem("selectedPlan",  this.name);
+      localStorage.setItem("selectedPrice", this.price);
+      window.location.href = this.page;
+    }
+
+    // Attach click listener to its button
+    listen() {
+      document.getElementById(this.id).addEventListener("click", () => this.select());
+    }
+  }
+
+  // =============================================
+  // Create one object per plan
+  // =============================================
+  const basicPlan   = new Plan("basicBtn",   "Basic Plan",   "100 EGP/month",  "Payment-Method.html");
+  const premiumPlan = new Plan("premiumBtn",  "Premium Plan", "250 EGP/month",  "Payment-Method.html");
+
+  // =============================================
+  // Start listening
+  // =============================================
+  basicPlan.listen();
+  premiumPlan.listen();
+</script>
 </body>
 </html>

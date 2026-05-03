@@ -142,7 +142,6 @@ input {
 <a href="Home.html" class="home-btn">Home</a>
     <div class="left">
         <img src="images/logo.svg" class="logo">
-           
         <img src="images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png" class="doctor">
     </div>
 
@@ -155,43 +154,80 @@ input {
             <div class="row">
                 <div class="field">
                     <label>First Name</label>
-                    <input type="text" placeholder="Enter your First Name" required>
+                    <input type="text" id="firstName" placeholder="Enter your First Name" required>
                 </div>
 
                 <div class="field">
                     <label>Last Name</label>
-                    <input type="text" placeholder="Enter your Last Name" required>
+                    <input type="text" id="lastName" placeholder="Enter your Last Name" required>
                 </div>
             </div>
 
             <div class="field">
                 <label>Phone Number</label>
-                <input type="text" placeholder="Enter your phone number" required>
+                <input type="text" id="phone" placeholder="Enter your phone number" required>
             </div>
 
             <div class="field">
                 <label>Email Address</label>
-                <input type="email" placeholder="Enter your email" required>
+                <input type="email" id="email" placeholder="Enter your email" required>
             </div>
 
             <div class="row">
                 <div class="field">
                     <label>Preferred Date</label>
-                    <input type="date" required>
+                    <input type="date" id="date" required>
                 </div>
 
                 <div class="field">
                     <label>Preferred Time</label>
-                    <input type="time" required>
+                    <input type="time" id="time" required>
                 </div>
             </div>
-            <a href="Booking.html">
-            <button class="btn">Submit →</button>
-            </a>
+
+            <button class="btn" id="submitBtn">Submit →</button>
         </form>
     </div>
 
 </div>
+
+<script>
+  class BookingForm {
+    constructor() {
+      this.firstName = document.getElementById("firstName");
+      this.lastName  = document.getElementById("lastName");
+      this.phone     = document.getElementById("phone");
+      this.email     = document.getElementById("email");
+      this.date      = document.getElementById("date");
+      this.time      = document.getElementById("time");
+      this.submitBtn = document.getElementById("submitBtn");
+    }
+
+    getData() {
+      return {
+        firstName: this.firstName.value,
+        lastName:  this.lastName.value,
+        phone:     this.phone.value,
+        email:     this.email.value,
+        date:      this.date.value,
+        time:      this.time.value,
+      };
+    }
+
+    listen() {
+      this.submitBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const data = this.getData();
+        localStorage.setItem("bookingDate", data.date);
+        localStorage.setItem("bookingTime", data.time);
+        window.location.href = "Payment-Method.html";
+      });
+    }
+  }
+
+  const form = new BookingForm();
+  form.listen();
+</script>
 
 </body>
 </html>

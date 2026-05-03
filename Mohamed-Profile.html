@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doctor Profile</title>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Doctor Profile</h2>
+
+
+<div class="info"><b>Name:</b> Dr. Mohamed Salama</div>
+<div class="info"><b>Age:</b> 40</div>
+<div class="info"><b>Contact:</b> 01012445678</div>
+<div class="info"><b>Clinic:</b> Alex Care Clinic</div>
+<div class="info"><b>Address:</b> Alexandria, Egypt</div>
+<div class="info"><b>Rating:</b> ⭐⭐⭐⭐</div>
+<div class="info"><b>Available Times:</b> 2 PM - 6 PM</div>
+
+<br>
+
+<a href="Booking.html">
+    <button>Book Appointment</button>
+</a>
+
+</div>
+<script>
+  class Doctor {
+    constructor(name, age, contact, clinic, times) {
+      this.name    = name;
+      this.age     = age;
+      this.contact = contact;
+      this.clinic  = clinic;
+      this.times   = times;
+    }
+
+    render() {
+      document.getElementById("docName").innerHTML    = "<b>Name:</b> "    + this.name;
+      document.getElementById("docAge").innerHTML     = "<b>Age:</b> "     + this.age;
+      document.getElementById("docContact").innerHTML = "<b>Contact:</b> " + this.contact;
+      document.getElementById("docClinic").innerHTML  = "<b>Clinic:</b> "  + this.clinic;
+      document.getElementById("docTimes").innerHTML   = "<b>Available Times:</b> " + this.times;
+    }
+
+    listen() {
+      document.getElementById("bookBtn").addEventListener("click", () => {
+        localStorage.setItem("bookedDoctor", this.name);
+        window.location.href = "Booking.html";
+      });
+    }
+  }
+
+  // ---- Sarah's data ----
+  const doctor = new Doctor(
+    "Dr. Mohamed salama",
+    40,
+    "01012445678",
+    "Alex Care Clinic",
+    "2 PM - 6 PM"
+  );
+
+  doctor.render();
+  doctor.listen();
+</script>
+</body>
+</html>

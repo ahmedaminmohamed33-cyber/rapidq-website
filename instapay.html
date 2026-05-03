@@ -166,7 +166,7 @@
         <div class="transfer-card">
             <span class="transfer-label">Phone Number / IPA</span>
             <span class="transfer-number" id="payNumber">01012345678</span>
-            <button class="copy-btn" onclick="copyNumber()">Copy Number</button>
+            <button class="copy-btn" id="copyBtn">Copy Number</button>
         </div>
 
         <p class="instructions">
@@ -181,6 +181,25 @@
     </main>
 
     <script>
+          class InstaPay {
+    constructor() {
+      this.number  = document.getElementById("payNumber");
+      this.copyBtn = document.getElementById("copyBtn");
+    }
+
+    copyNumber() {
+      navigator.clipboard.writeText(this.number.innerText);
+      alert("Number copied: " + this.number.innerText);
+    }
+
+    listen() {
+      this.copyBtn.addEventListener("click", () => this.copyNumber());
+    }
+  }
+
+  const instapay = new InstaPay();
+  instapay.listen();
+
         function copyNumber() {
             const num = document.getElementById('payNumber').innerText;
             navigator.clipboard.writeText(num);
