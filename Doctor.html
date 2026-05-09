@@ -181,7 +181,8 @@ button:hover {
     // STEP 1: Doctor Class (Blueprint for each doctor)
     // =========================================
     class Doctor {
-      constructor(name, specialty, rating, price, image, profilePage) {
+      constructor(id, name, specialty, rating, price, image, profilePage) {
+        this.id = id;
         this.name = name;
         this.specialty = specialty;
         this.rating = rating;
@@ -199,9 +200,7 @@ button:hover {
               <p class="specialty">${this.specialty}</p>
               <p class="rating">⭐ ${this.rating}</p>
               <p class="price">${this.price} EGP</p>
-              <a href="Booking.html">
-                <button>Book Now</button>
-              </a>
+              <button onclick="bookDoctor(${this.id}, '${this.name.replace(/'/g, "\\'")}')">Book Now</button>
             </div>
             <a href="${this.profilePage}"><img src="${this.image}" alt="${this.name}" style="cursor:pointer;"></a>
           </div>
@@ -253,11 +252,17 @@ button:hover {
     // STEP 3: Your Doctor Data
     // =========================================
     const allDoctors = new DoctorList([
-      new Doctor("Dr. Ahmed Ali",      "Cardiology", 4.8, 300, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "AhmedAli-Profile.html"),
-      new Doctor("Dr. Omar Hassan",    "Neurology",  5.0, 600, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "Omar-Profile.html"),
-      new Doctor("Dr. Mohamed Salama", "Dentistry",  4.9, 500, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "Mohamed-Profile.html"),
-      new Doctor("Dr. Ahmed El-Haggar","Cardiology", 4.7, 500, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "AhmedElhaggar-Profile.html"),
+      new Doctor(4, "Dr. Ahmed Ali",      "Cardiology", 4.8, 300, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "AhmedAli-Profile.html"),
+      new Doctor(1, "Dr. Omar Hassan",    "Neurology",  5.0, 600, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "Omar-Profile.html"),
+      new Doctor(2, "Dr. Mohamed Salama", "Dentistry",  4.9, 500, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "Mohamed-Profile.html"),
+      new Doctor(3, "Dr. Ahmed El-Haggar","Cardiology", 4.7, 500, "images/portrait-professional-medical-worker-posing-picture-with-arms-folded.png", "AhmedElhaggar-Profile.html"),
     ]);
+
+    function bookDoctor(id, name) {
+      localStorage.setItem("bookedDoctorId", id);
+      localStorage.setItem("bookedDoctor", name);
+      window.location.href = "Booking.html";
+    }
 
 
     // =========================================

@@ -1,55 +1,33 @@
-const express = require('express');
-const path = require('path');
-const app = express();
+const express = require("express");
+const cors    = require("cors");
+require("dotenv").config();
 
-app.use(express.json()); // مهم جداً عشان السيرفر يفهم الـ JSON المبعوث
+const app  = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
 app.use(express.static(__dirname));
 
-// قاعدة بيانات وهمية للتجربة
-const users = [
-    { email: "basmalah@rapidq.com", password: "12345678" }
-];
+// Routes
+app.use("/api/auth",    require("./routes/auth"));
+app.use("/api/booking", require("./routes/booking"));
+app.use("/api/payment", require("./routes/payment"));
+app.use("/api/queue",   require("./routes/queue"));
 
-app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
-
-    // بنبحث عن المستخدم في قاعدة البيانات
-    const user = users.find(u => u.email === email && u.password === password);
-
-    if (user) {
-        res.json({ success: true, message: "Login successful!" });
-    } else {
-        res.json({ success: false, message: "Invalid email or password!" });
-    }
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/Home.html");
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Home.html'));
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({
+    ok: false,
+    message: "Server error. Check the terminal for details.",
+  });
 });
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+app.listen(PORT, () => {
+  console.log(` Server running at http://localhost:${PORT}`);
 });
-// Queue data
-let queueData = {
-  clinicName: "Dr. Ahmed Clinic",
-  clinicLocation: "Smouha, Alexandria",
-  status: "On Track",
-  avgTimePerPatient: 5,
-  yourNumber: 27,
-  nowServing: 20,
-};
-
-// GET queue info
-app.get('/api/queue', (req, res) => {
-  const patientsAhead = queueData.yourNumber - queueData.nowServing;
-  const estimatedWait = patientsAhead * queueData.avgTimePerPatient;
-  res.json({ success: true, ...queueData, patientsAhead, estimatedWait });
-});
-
-// POST cancel booking
-app.post('/api/cancel', (req, res) => {
-  res.json({ success: true, message: "Booking cancelled!" });
-});
-const queueRoutes = require('./routes/queue');
-app.use('/api/queue', queueRoutes);

@@ -207,7 +207,7 @@
                                 <p>• Find the best doctors, check real-time availability, 
                         and book your visit without the hassle of long phone calls 
                         or crowded waiting rooms.</p>
-                        <a href="Booking.html">
+                        <a href="Doctor.html">
                              <button class="btn-primary">Book Appointment</button>
                          </a>
                     </div>
@@ -246,30 +246,8 @@
 
 
 
-                        <script>
-function checkLogin() {
-    let isLoggedIn = localStorage.getItem("isLoggedIn");
+                      
+<script src="routes/app.js"></script>
 
-    if (isLoggedIn === "true") {
-        document.getElementById("authBtn").innerText = "Logout";
-    } else {
-        document.getElementById("authBtn").innerText = "Login";
-    }
-}
-
-function handleAuth() {
-    let isLoggedIn = localStorage.getItem("isLoggedIn");
-
-    if (isLoggedIn === "true") {
-        
-        localStorage.setItem("isLoggedIn", "false");
-        window.location.href = "Home.html";
-    } else {
-        window.location.href = "LogIn.html";
-    }
-}
-
-checkLogin();
-</script>
                         </body>
                         

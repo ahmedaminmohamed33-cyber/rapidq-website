@@ -1,25 +1,175 @@
-const express  = require("express");
-const router   = express.Router();
+const express = require("express");
+const router  = express.Router();
+const db      = require("../db");
+const { Appointment, QueueEntry } = require("../models");
 
-const bookings = [];
+const AVG_TIME = 10; // minutes per patient
 
-router.post("/book", (req, res) => {
-  const token = req.headers["authorization"];
+router.post("/book", async (req, res) => {
+  try {
+    const token = req.headers["authorization"];
+    if (!token) {
+      return res.status(401).json({ ok: false, message: "Please log in to book." });
+    }
 
-  if (!token) {
-    return res.status(401).json({ ok: false, message: "Please log in to book." });
+    const { patId, docId, clId, asId, date, time } = req.body;
+
+    if (!patId || !docId || !date || !time) {
+      return res.status(400).json({ ok: false, message: "All fields are required." });
+    }
+
+    const appointment = new Appointment({
+      patientId: patId,
+      doctorId: docId,
+      clinicId: clId || null,
+      assistantId: asId || null,
+      date,
+      time,
+    });
+
+    const result = await db.query(
+      `INSERT INTO Appointment (As_id, Cl_id, Doc_id, Pat_id, Date, Time, Status)
+       OUTPUT INSERTED.App_id
+       VALUES (@asId, @clId, @docId, @patId, @date, @time, @status)`,
+      {
+        asId: appointment.assistantId,
+        clId: appointment.clinicId,
+        docId: appointment.doctorId,
+        patId: appointment.patientId,
+        date: appointment.date,
+        time: appointment.time,
+        status: appointment.status,
+      }
+    );
+
+    appointment.id = result[0].App_id;
+
+    const queueResult = await db.query(
+      `SELECT COUNT(*) AS Number FROM Appointment
+       WHERE Doc_id = @docId AND Date = @date`,
+      { docId: appointment.doctorId, date: appointment.date }
+    );
+    const queueIdResult = await db.query(
+      "SELECT ISNULL(MAX(Que_id), 0) + 1 AS nextId FROM Queue"
+    );
+
+    const queueEntry = new QueueEntry({
+      id: queueIdResult[0].nextId,
+      appointmentId: appointment.id,
+      number: queueResult[0].Number,
+    });
+
+    await db.query(
+      `INSERT INTO Queue (Que_id, App_id, Number, Status)
+       VALUES (@queueId, @appId, @queueNumber, @status)`,
+      {
+        queueId: queueEntry.id,
+        appId: queueEntry.appointmentId,
+        queueNumber: queueEntry.number,
+        status: queueEntry.status,
+      }
+    );
+
+    console.log(`New booking: Patient ${appointment.patientId} with Doctor ${appointment.doctorId} - Queue #${queueEntry.number}`);
+
+    res.status(201).json({
+      ok: true,
+      message: "Appointment booked!",
+      appId: appointment.id,
+      queueNumber: queueEntry.number,
+    });
+  } catch (error) {
+    console.error("Booking error:", error.message);
+    res.status(500).json({ ok: false, message: "Booking failed. Please try again." });
   }
+});
 
-  const { firstName, lastName, phone, email, date, time } = req.body;
+router.get("/queue", async (req, res) => {
+  try {
+    const { appId } = req.query;
 
-  if (!firstName || !lastName || !phone || !email || !date || !time) {
-    return res.status(400).json({ ok: false, message: "All fields are required." });
+    if (!appId) {
+      return res.status(400).json({ ok: false, message: "Appointment ID required." });
+    }
+
+    const rows = await db.query(
+      `SELECT q.Que_id, q.App_id, q.Number, q.Status,
+              a.Doc_id, a.Date, a.Time,
+              d.First_name, d.Last_name,
+              c.Name AS ClinicName, c.City
+       FROM Queue q
+       JOIN Appointment a ON q.App_id = a.App_id
+       JOIN Doctor d      ON a.Doc_id = d.Doc_id
+       LEFT JOIN Clinic c ON a.Cl_id  = c.Cl_id
+       WHERE q.App_id = @appId`,
+      { appId }
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ ok: false, message: "Queue not found." });
+    }
+
+    const row = rows[0];
+    const queueEntry = QueueEntry.fromRow(row);
+
+    const aheadRows = await db.query(
+      `SELECT COUNT(*) AS ahead
+       FROM Queue q
+       JOIN Appointment a ON q.App_id = a.App_id
+       WHERE a.Doc_id = @docId
+         AND a.Date = @date
+         AND q.Number < @number
+         AND q.Status = 'Waiting'`,
+      { docId: row.Doc_id, date: row.Date, number: queueEntry.number }
+    );
+
+    const patientsAhead = aheadRows[0].ahead;
+    const estimatedWait = patientsAhead * AVG_TIME;
+    const nowServing = queueEntry.number - patientsAhead;
+
+    res.json({
+      ok: true,
+      yourNumber: queueEntry.number,
+      nowServing,
+      patientsAhead,
+      estimatedWait,
+      status: queueEntry.status,
+      doctorName: `Dr. ${row.First_name} ${row.Last_name}`,
+      clinicName: row.ClinicName || "RapidQ Clinic",
+      clinicLocation: row.City || "Alexandria",
+      avgTimePerPatient: AVG_TIME,
+    });
+  } catch (error) {
+    console.error("Queue loading error:", error.message);
+    res.status(500).json({ ok: false, message: "Could not load queue information." });
   }
+});
 
-  bookings.push({ id: bookings.length + 1, firstName, lastName, phone, email, date, time });
-  console.log("New booking:", firstName, date, time);
+router.post("/cancel", async (req, res) => {
+  try {
+    const { appId } = req.body;
 
-  res.json({ ok: true, message: "Appointment booked!" });
+    if (!appId) {
+      return res.status(400).json({ ok: false, message: "Appointment ID required." });
+    }
+
+    const appointment = new Appointment({ id: appId, status: "Cancelled" });
+    const queueEntry = new QueueEntry({ appointmentId: appId, status: "Cancelled" });
+
+    await db.query(
+      "UPDATE Appointment SET Status = @status WHERE App_id = @appId",
+      { status: appointment.status, appId: appointment.id }
+    );
+    await db.query(
+      "UPDATE Queue SET Status = @status WHERE App_id = @appId",
+      { status: queueEntry.status, appId: queueEntry.appointmentId }
+    );
+
+    res.json({ ok: true, message: "Booking cancelled!" });
+  } catch (error) {
+    console.error("Cancel booking error:", error.message);
+    res.status(500).json({ ok: false, message: "Could not cancel booking." });
+  }
 });
 
 module.exports = router;

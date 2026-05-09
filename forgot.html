@@ -78,16 +78,17 @@ button[type="submit"] {
         </div>
 
         <div class="form-card">
-            <form>
-                <div class="input-group">
-                    <input type="password" required placeholder="New Password" minlength="8">
-                </div>
-                <div class="input-group">
-                    <input type="password" required placeholder="Confirm New Password" minlength="8">
-                </div>
-                <button type="submit" class="btn-submit">Save</button>
-            </form>
+            <form onsubmit="savePassword(event)">
+    <div class="input-group">
+        <input id="newPassword" type="password" required placeholder="New Password" minlength="8">
+    </div>
+    <div class="input-group">
+        <input id="confirmPassword" type="password" required placeholder="Confirm New Password" minlength="8">
+    </div>
+    <button type="submit" class="btn-submit">Save</button>
+</form>
         </div>
     </div>
+    <script src="routes/app.js"></script>
 </body>
 </html>

@@ -178,46 +178,6 @@
 
         <a href="Payment-Method.html" class="back-btn">← Back to Methods</a>
     </main>
-<script>
-  class CardPayment {
-    constructor() {
-      this.form    = document.getElementById("paymentForm");
-      this.name    = document.getElementById("cardName");
-      this.number  = document.getElementById("cardNumber");
-      this.expiry  = document.getElementById("cardExpiry");
-      this.cvv     = document.getElementById("cardCVV");
-      this.payBtn  = document.getElementById("payBtn");
-    }
-
-    validate() {
-      if (this.name.value.trim() === "") {
-        alert("Please enter the cardholder name."); return false;
-      }
-      if (this.number.value.length < 16) {
-        alert("Please enter a valid 16-digit card number."); return false;
-      }
-      if (this.expiry.value.length < 5) {
-        alert("Please enter a valid expiry date (MM/YY)."); return false;
-      }
-      if (this.cvv.value.length < 3) {
-        alert("Please enter a valid CVV."); return false;
-      }
-      return true;
-    }
-
-    pay() {
-      if (!this.validate()) return;
-      alert("✅ Payment successful! Booking confirmed.");
-      window.location.href = "Home.html";
-    }
-
-    listen() {
-      this.payBtn.addEventListener("click", () => this.pay());
-    }
-  }
-
-  const payment = new CardPayment();
-  payment.listen();
-</script>
+<script src="routes/app.js"></script>
 </body>
 </html>

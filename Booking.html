@@ -150,7 +150,7 @@ input {
         <p class="sub">BOOK AN</p>
         <h1 class="title">Appointment</h1>
 
-        <form class="form">
+        <form class="form" id="bookingForm">
             <div class="row">
                 <div class="field">
                     <label>First Name</label>
@@ -185,49 +185,13 @@ input {
                 </div>
             </div>
 
-            <button class="btn" id="submitBtn">Submit →</button>
+            <button class="btn" id="submitBtn" type="submit">Submit →</button>
         </form>
     </div>
 
 </div>
 
-<script>
-  class BookingForm {
-    constructor() {
-      this.firstName = document.getElementById("firstName");
-      this.lastName  = document.getElementById("lastName");
-      this.phone     = document.getElementById("phone");
-      this.email     = document.getElementById("email");
-      this.date      = document.getElementById("date");
-      this.time      = document.getElementById("time");
-      this.submitBtn = document.getElementById("submitBtn");
-    }
-
-    getData() {
-      return {
-        firstName: this.firstName.value,
-        lastName:  this.lastName.value,
-        phone:     this.phone.value,
-        email:     this.email.value,
-        date:      this.date.value,
-        time:      this.time.value,
-      };
-    }
-
-    listen() {
-      this.submitBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const data = this.getData();
-        localStorage.setItem("bookingDate", data.date);
-        localStorage.setItem("bookingTime", data.time);
-        window.location.href = "Payment-Method.html";
-      });
-    }
-  }
-
-  const form = new BookingForm();
-  form.listen();
-</script>
+<script src="routes/app.js"></script>
 
 </body>
 </html>

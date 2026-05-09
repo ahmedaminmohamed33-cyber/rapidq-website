@@ -137,7 +137,7 @@
     <button onclick="setActive(this)">Doctor</button>
   </div>
 
- <form onsubmit="login(event)">
+ <form>
     <div class="content">
       <input type="email" required placeholder="Enter your email">
       <input type="password" required placeholder="Enter your password" minlength="8">
@@ -146,7 +146,7 @@
       <label>
         <input type="checkbox"> Remember me
       </label>
-      <a href="email-verifiy.html">Forgot Password?</a>
+      <a href="forgot.html">Forgot Password?</a>
     </div>
     <div class="button">
       <button type="button" onclick="window.location.href='SignUp.html'">Sign up?</button>
@@ -154,21 +154,9 @@
     </div>
   </form>
 
-  <script>
-    function setActive(btn) {
-        document.querySelectorAll('.user button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-  </script>
-  <script>
-function login(event) {
-    event.preventDefault();
+ 
+<script src="routes/app.js"></script>
 
-    localStorage.setItem("isLoggedIn", "true");
-
-    window.location.href = "Home.html";
-}
-</script>
 
 </body>
 </html>

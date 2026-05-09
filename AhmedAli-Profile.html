@@ -127,7 +127,8 @@
 
 <script>
   class Doctor {
-    constructor(name, age, contact, clinic, times) {
+    constructor(id, name, age, contact, clinic, times) {
+      this.id      = id;
       this.name    = name;
       this.age     = age;
       this.contact = contact;
@@ -145,15 +146,17 @@
     }
 
     listen() {
-      document.getElementById("bookBtn").addEventListener("click", () => {
-        localStorage.setItem("bookedDoctor", this.name);
-        window.location.href = "Booking.html";
-      });
-    }
+  document.getElementById("bookBtn").addEventListener("click", () => {
+    localStorage.setItem("bookedDoctor",   this.name);
+    localStorage.setItem("bookedDoctorId", this.id);   // add this line
+    window.location.href = "Booking.html";
+  });
+}
   }
 
   // إنشاء أوبجكت الدكتور وعرض بياناته
   const doctor = new Doctor(
+    4,
     "Dr. Ahmed Ali",
     55,
     "01112345678",

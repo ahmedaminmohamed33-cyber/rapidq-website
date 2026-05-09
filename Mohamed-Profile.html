@@ -127,7 +127,8 @@
 
 <script>
   class Doctor {
-    constructor(name, age, contact, clinic, times) {
+    constructor(id, name, age, contact, clinic, times) {
+      this.id      = id;
       this.name    = name;
       this.age     = age;
       this.contact = contact;
@@ -144,16 +145,18 @@
       document.getElementById("docTimes").innerHTML   = "<b>Available Times:</b> " + this.times;
     }
 
-    listen() {
-      document.getElementById("bookBtn").addEventListener("click", () => {
-        localStorage.setItem("bookedDoctor", this.name);
-        window.location.href = "Booking.html";
-      });
-    }
+   listen() {
+  document.getElementById("bookBtn").addEventListener("click", () => {
+    localStorage.setItem("bookedDoctor",   this.name);
+    localStorage.setItem("bookedDoctorId", this.id);   // add this line
+    window.location.href = "Booking.html";
+  });
+}
   }
 
   // إنشاء أوبجكت الدكتور وعرض بياناته
   const doctor = new Doctor(
+    2,
     "Dr. Mohamed salama",
     40,
     "01012445678",

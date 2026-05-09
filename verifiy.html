@@ -106,35 +106,7 @@
   
   </div>
 
-  <script>
-    const inputs = document.querySelectorAll(".otp-inputs input");
-
-    inputs.forEach((input, index) => {
-      input.addEventListener("input", (e) => {
-        if (e.target.value.length === 1 && index < inputs.length - 1) {
-          inputs[index + 1].focus();
-        }
-      });
-
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Backspace" && !input.value && index > 0) {
-          inputs[index - 1].focus();
-        }
-      });
-    });
-
-    function verifyCode() {
-      let code = "";
-      inputs.forEach(input => code += input.value);
-
-      if (code.length === 4) {
-        // هنا تروحي لصفحة تغيير الباسورد
-        window.location.href = "forgot.html";
-      } else {
-        alert("Please enter complete code");
-      }
-    }
-  </script>
+<script src="routes/app.js"></script>
 
 </body>
 </html>

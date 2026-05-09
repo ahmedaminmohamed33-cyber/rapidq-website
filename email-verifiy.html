@@ -89,21 +89,7 @@
     <button class="btn" onclick="goToVerification()">Continue</button>
   </div>
 
-  <script>
-    function goToVerification() {
-      const email = document.getElementById("email").value.trim();
-
-      if (!email) {
-        alert("Please enter your email");
-        return;
-      }
-
-      // ممكن هنا تبعتي الإيميل لـ API قبل الانتقال
-
-      // انتقال لصفحة الـ verification
-      window.location.href = "verifiy.html?email=" + encodeURIComponent(email);
-    }
-  </script>
+<script src="routes/app.js"></script>
 
 </body>
 </html>

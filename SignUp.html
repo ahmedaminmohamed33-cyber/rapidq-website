@@ -128,12 +128,12 @@
     <button onclick="setActive(this); showDoctor()">Doctor</button>
 </div>
 
-<form id="form" action="Home.html">
-    <input type="text" placeholder="Enter your first name" required>
-    <input type="text" placeholder="Enter your last name" required>
-    <input type="email" placeholder="Enter your email" required>
-    <input type="password" placeholder="Enter your password" required>
-    <input type="password" placeholder="Confirm your password" required>
+<form id="form">
+    <input id="firstName" type="text" placeholder="Enter your first name" required>
+    <input id="lastName" type="text" placeholder="Enter your last name" required>
+    <input id="email" type="email" placeholder="Enter your email" required>
+    <input id="password" type="password" placeholder="Enter your password" required>
+    <input id="confirm" type="password" placeholder="Confirm your password" required>
 
     <div id="extra"></div>
 
@@ -142,21 +142,7 @@
     </div>
 </form>
 
-<script>
-    function setActive(btn) {
-        document.querySelectorAll('.user button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    function showPatient() {
-        document.getElementById("extra").innerHTML = "";
-    }
-
-    function showDoctor() {
-        document.getElementById("extra").innerHTML =
-            '<input type="text" placeholder="Enter your specialization" required>';
-    }
-</script>
+<script src="routes/app.js"></script>
 
 </body>
 </html>
