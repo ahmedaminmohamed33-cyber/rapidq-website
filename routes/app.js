@@ -29,9 +29,6 @@ class API {
   signupPatient(body)      { return this.send("POST", "/auth/signup/patient",    body); }
   signupDoctor(body)       { return this.send("POST", "/auth/signup/doctor",     body); }
   login(body)              { return this.send("POST", "/auth/login",             body); }
-  verifyOTP(body)          { return this.send("POST", "/auth/verify-otp",        body); }
-  forgotPassword(body)     { return this.send("POST", "/auth/forgot-password",   body); }
-  verifyResetOTP(body)     { return this.send("POST", "/auth/verify-reset-otp",  body); }
   resetPassword(body)      { return this.send("POST", "/auth/reset-password",    body); }
   book(body)               { return this.send("POST", "/booking/book",           body); }
   getQueue(appId)          { return this.send("GET",  `/booking/queue?appId=${appId}`); }
@@ -163,9 +160,7 @@ class SignUpPage {
 
         alert(result.data.message || "Signup request finished.");
         if (result.ok) {
-          localStorage.setItem("verifyEmail", email);
-          localStorage.setItem("verifyRole",  role);
-          window.location.href = "verifiy.html?mode=signup";
+          window.location.href = "LogIn.html";
         }
       } catch (error) {
         alert("Signup failed. Check that the server is running and try again.");
@@ -180,88 +175,6 @@ class SignUpPage {
   }
 }
 
-// ── OTP Verify Page ────────────────────────────────
-class OTPVerifyPage {
-  constructor() {
-    if (!window.location.href.includes("verifiy")) return;
-
-    const inputs = document.querySelectorAll(".otp-inputs input");
-    const mode   = new URLSearchParams(window.location.search).get("mode");
-
-    // Auto move between OTP boxes
-    inputs.forEach((input, index) => {
-      input.addEventListener("input", () => {
-        if (input.value.length === 1 && index < inputs.length - 1) {
-          inputs[index + 1].focus();
-        }
-      });
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Backspace" && !input.value && index > 0) {
-          inputs[index - 1].focus();
-        }
-      });
-    });
-
-    window.verifyCode = async () => {
-      let code = "";
-      inputs.forEach(input => code += input.value);
-      if (code.length < 4) return alert("Please enter the complete 4-digit code.");
-
-      const api = new API();
-
-      if (mode === "signup") {
-        const email = localStorage.getItem("verifyEmail");
-        const { ok, data } = await api.verifyOTP({ email, otp: code });
-        alert(data.message);
-        if (ok) {
-          localStorage.removeItem("verifyEmail");
-          window.location.href = "LogIn.html";
-        }
-
-      } else if (mode === "reset") {
-        const email = localStorage.getItem("resetEmail");
-        const { ok, data } = await api.verifyResetOTP({ email, otp: code });
-        alert(data.message);
-        if (ok) window.location.href = "forgot.html";
-      }
-    };
-
-    // Resend button
-    const resendBtn = document.querySelector(".resend");
-    if (resendBtn) {
-      resendBtn.addEventListener("click", async () => {
-        const email = localStorage.getItem("verifyEmail") || localStorage.getItem("resetEmail");
-        const role  = localStorage.getItem("verifyRole") || "Patient";
-        await new API().forgotPassword({ email, role });
-        alert("Code resent! Check your email.");
-      });
-    }
-  }
-}
-
-// ── Email Verify Page (enter email for forgot password)
-class EmailVerifyPage {
-  constructor() {
-    if (!window.location.href.includes("email-verifiy")) return;
-
-    window.goToVerification = async () => {
-      const email = document.getElementById("email")?.value.trim();
-      if (!email) return alert("Please enter your email.");
-
-      const activeBtn = document.querySelector(".user button.active");
-      const role      = activeBtn ? activeBtn.innerText : "Patient";
-
-      const { ok, data } = await new API().forgotPassword({ email, role });
-      alert(data.message);
-      if (ok) {
-        localStorage.setItem("resetEmail", email);
-        localStorage.setItem("resetRole",  role);
-        window.location.href = "verifiy.html?mode=reset";
-      }
-    };
-  }
-}
-
 // ── Forgot Page (new password) ─────────────────────
 class ForgotPage {
   constructor() {
@@ -271,16 +184,14 @@ class ForgotPage {
       e.preventDefault();
       const newPassword = document.getElementById("newPassword").value.trim();
       const confirm     = document.getElementById("confirmPassword").value.trim();
+      const email       = document.getElementById("resetEmail").value.trim();
       if (newPassword !== confirm) return alert("Passwords do not match!");
 
-      const email = localStorage.getItem("resetEmail");
-      const role  = localStorage.getItem("resetRole") || "Patient";
+      const role = "Patient";
 
       const { ok, data } = await new API().resetPassword({ email, newPassword, role });
       alert(data.message);
       if (ok) {
-        localStorage.removeItem("resetEmail");
-        localStorage.removeItem("resetRole");
         window.location.href = "LogIn.html";
       }
     };
@@ -444,8 +355,6 @@ class TrackingPage {
 new HomePage();
 new LoginPage();
 new SignUpPage();
-new OTPVerifyPage();
-new EmailVerifyPage();
 new ForgotPage();
 new BookingPage();
 new PaymentPage();

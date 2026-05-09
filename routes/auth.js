@@ -11,6 +11,15 @@ const otps = {};
 
 // ── Helper: send email ─────────────────────────────
 async function sendEmail(to, subject, html) {
+  if (
+    !process.env.EMAIL_USER ||
+    !process.env.EMAIL_PASS ||
+    process.env.EMAIL_USER === "your_gmail@gmail.com" ||
+    process.env.EMAIL_PASS === "your_gmail_app_password"
+  ) {
+    throw new Error("Email is not configured.");
+  }
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -69,19 +78,7 @@ router.post("/signup/patient", async (req, res) => {
       }
     );
 
-    const otp = generateOTP();
-    otps[patient.email] = otp;
-    console.log(`OTP for ${patient.email}: ${otp}`);
-
-    await sendEmail(
-      patient.email,
-      "Verify your RapidQ account",
-      `<h2>Hi ${patient.firstName}!</h2>
-       <p>Your verification code is:</p>
-       <h1 style="color:#0573E4;letter-spacing:8px">${otp}</h1>`
-    );
-
-    res.json({ ok: true, message: "Account created! Check your email for the OTP." });
+    res.json({ ok: true, message: "Account created! You can now log in." });
   } catch (error) {
     console.error("Patient signup error:", error.message);
     res.status(500).json({ ok: false, message: "Signup failed. Please try again." });
@@ -130,19 +127,7 @@ router.post("/signup/doctor", async (req, res) => {
       }
     );
 
-    const otp = generateOTP();
-    otps[doctor.email] = otp;
-    console.log(`OTP for ${doctor.email}: ${otp}`);
-
-    await sendEmail(
-      doctor.email,
-      "Verify your RapidQ account",
-      `<h2>Hi Dr. ${doctor.firstName}!</h2>
-       <p>Your verification code is:</p>
-       <h1 style="color:#0573E4;letter-spacing:8px">${otp}</h1>`
-    );
-
-    res.json({ ok: true, message: "Account created! Check your email for the OTP." });
+    res.json({ ok: true, message: "Account created! You can now log in." });
   } catch (error) {
     console.error("Doctor signup error:", error.message);
     res.status(500).json({ ok: false, message: "Signup failed. Please try again." });
@@ -151,18 +136,7 @@ router.post("/signup/doctor", async (req, res) => {
 
 // ── VERIFY OTP (signup) ────────────────────────────
 router.post("/verify-otp", (req, res) => {
-  const { email, otp } = req.body;
-
-  if (!email || !otp) {
-    return res.status(400).json({ ok: false, message: "Email and OTP are required." });
-  }
-
-  if (otps[email] !== otp) {
-    return res.status(400).json({ ok: false, message: "Wrong code. Try again." });
-  }
-
-  delete otps[email];
-  res.json({ ok: true, message: "Email verified! You can now log in." });
+  res.status(410).json({ ok: false, message: "Email verification is disabled." });
 });
 
 // ── LOGIN ──────────────────────────────────────────
@@ -209,52 +183,12 @@ router.post("/login", async (req, res) => {
 
 // ── FORGOT PASSWORD: send OTP ──────────────────────
 router.post("/forgot-password", async (req, res) => {
-  try {
-    const { email, role } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ ok: false, message: "Email is required." });
-    }
-
-    const table = role === "Doctor" ? "Doctor" : "Patient";
-    const rows  = await db.query(
-      `SELECT * FROM ${table} WHERE Email = @email`,
-      { email }
-    );
-
-    if (rows.length === 0) {
-      return res.status(400).json({ ok: false, message: "No account found with this email." });
-    }
-
-    const user = role === "Doctor" ? Doctor.fromRow(rows[0]) : Patient.fromRow(rows[0]);
-    const otp = generateOTP();
-    otps[user.email] = otp;
-    console.log(`Reset OTP for ${user.email}: ${otp}`);
-
-    await sendEmail(
-      user.email,
-      "Reset your RapidQ password",
-      `<h2>Hi ${user.firstName}!</h2>
-       <p>Your password reset code is:</p>
-       <h1 style="color:#0573E4;letter-spacing:8px">${otp}</h1>`
-    );
-
-    res.json({ ok: true, message: "OTP sent! Check your email." });
-  } catch (error) {
-    console.error("Forgot password error:", error.message);
-    res.status(500).json({ ok: false, message: "Could not send OTP. Please try again." });
-  }
+  res.status(410).json({ ok: false, message: "Email verification is disabled." });
 });
 
 // ── VERIFY RESET OTP ───────────────────────────────
 router.post("/verify-reset-otp", (req, res) => {
-  const { email, otp } = req.body;
-
-  if (otps[email] !== otp) {
-    return res.status(400).json({ ok: false, message: "Wrong code. Try again." });
-  }
-
-  res.json({ ok: true, message: "OTP verified!" });
+  res.status(410).json({ ok: false, message: "Password reset verification is disabled." });
 });
 
 // ── RESET PASSWORD ─────────────────────────────────

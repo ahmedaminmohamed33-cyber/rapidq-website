@@ -41,6 +41,7 @@ body {
 }
 
 
+input[type="email"],
 input[type="password"] {
     width: 100%;
     padding: 15px 25px;
@@ -79,6 +80,9 @@ button[type="submit"] {
 
         <div class="form-card">
             <form onsubmit="savePassword(event)">
+    <div class="input-group">
+        <input id="resetEmail" type="email" required placeholder="Enter your email">
+    </div>
     <div class="input-group">
         <input id="newPassword" type="password" required placeholder="New Password" minlength="8">
     </div>
