@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doctor Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #E4F1FA;
+    color: #111827;
+    min-height: 100vh;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 36px 24px;
+}
+
+.logo img {
+    height: 45px;
+}
+
+.logout-btn,
+.action-btn {
+    background-color: #0573E4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.logout-btn {
+    background-color: #111827;
+}
+
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 10px 24px 50px;
+}
+
+.header {
+    margin-bottom: 28px;
+}
+
+.header h1 {
+    font-size: 42px;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: #64748b;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.stat-box,
+.queue-panel,
+.current-panel {
+    background: white;
+    border-radius: 8px;
+    padding: 22px;
+}
+
+.stat-box span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.stat-box strong {
+    display: block;
+    color: #0573E4;
+    font-size: 38px;
+    margin-top: 8px;
+}
+
+.work-area {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 20px;
+}
+
+.current-panel h2,
+.queue-panel h2 {
+    margin-bottom: 16px;
+}
+
+#currentPatient {
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    color: #334155;
+}
+
+#currentPatient strong {
+    color: #111827;
+    font-size: 22px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.secondary-btn {
+    background-color: white;
+    color: #0573E4;
+    border: 2px solid #0573E4;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#dashboardMessage {
+    color: #0573E4;
+    min-height: 24px;
+    margin-top: 14px;
+    font-weight: 600;
+}
+
+#queueList {
+    list-style: none;
+}
+
+#queueList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+#queueList li:last-child {
+    border-bottom: none;
+}
+
+#queueList strong {
+    color: #0573E4;
+}
+
+@media (max-width: 800px) {
+    .stats,
+    .work-area {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 32px;
+    }
+}
+</style>
+</head>
+
+<body>
+<nav>
+    <div class="logo">
+        <img src="images/logo.svg" alt="RapidQ Logo">
+    </div>
+    <button id="doctorLogoutBtn" class="logout-btn">Logout</button>
+</nav>
+
+<main>
+    <section class="header">
+        <h1 id="doctorName">Doctor Dashboard</h1>
+        <p>Manage today's booked appointments and queue.</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat-box">
+            <span>Total booked today</span>
+            <strong id="totalBooked">0</strong>
+        </div>
+        <div class="stat-box">
+            <span>Waiting</span>
+            <strong id="waitingCount">0</strong>
+        </div>
+        <div class="stat-box">
+            <span>Finished</span>
+            <strong id="finishedCount">0</strong>
+        </div>
+    </section>
+
+    <section class="work-area">
+        <div class="current-panel">
+            <h2>Current patient</h2>
+            <div id="currentPatient">Loading...</div>
+            <div class="actions">
+                <button id="nextPatientBtn" class="action-btn">Next Patient</button>
+                <button id="refreshDashboardBtn" class="secondary-btn">Refresh</button>
+            </div>
+            <p id="dashboardMessage"></p>
+        </div>
+
+        <div class="queue-panel">
+            <h2>Today's queue</h2>
+            <ul id="queueList">
+                <li>Loading appointments...</li>
+            </ul>
+        </div>
+    </section>
+</main>
+
+<script src="routes/app.js"></script>
+</body>
+</html>

@@ -38,13 +38,113 @@ function generateOTP() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
+function validPhone(phone) {
+  return /^\d{11}$/.test(phone);
+}
+
+async function insertPatient(patient) {
+  const columns = await getColumns("Patient");
+  const insert = buildPersonInsert("Patient", columns, {
+    Pat_id: ["patId", patient.id],
+    First_name: ["firstName", patient.firstName],
+    Last_name: ["lastName", patient.lastName],
+    Email: ["email", patient.email],
+    Password: ["password", patient.password],
+    Gender: ["gender", patient.gender],
+    Birthdate: ["birthdate", patient.birthdate],
+    Phone: ["phone", patient.phone],
+    City: ["city", patient.city],
+    Street: ["street", patient.street],
+  });
+
+  await db.query(insert.sql, insert.params);
+}
+
+async function insertDoctor(doctor) {
+  const columns = await getColumns("Doctor");
+  const specialityColumn = columns.has("speciality") ? columns.get("speciality") : columns.get("spectiality");
+  const insert = buildPersonInsert("Doctor", columns, {
+    Doc_id: ["docId", doctor.id],
+    First_name: ["firstName", doctor.firstName],
+    Last_name: ["lastName", doctor.lastName],
+    Email: ["email", doctor.email],
+    Password: ["password", doctor.password],
+    [specialityColumn]: ["speciality", doctor.speciality],
+    Gender: ["gender", doctor.gender],
+    Birthdate: ["birthdate", doctor.birthdate],
+    Phone: ["phone", doctor.phone],
+    City: ["city", doctor.city],
+    Street: ["street", doctor.street],
+  });
+
+  await db.query(insert.sql, insert.params);
+}
+
+async function getColumns(table) {
+  const rows = await db.query(
+    "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table",
+    { table }
+  );
+  return new Map(rows.map(row => [row.COLUMN_NAME.toLowerCase(), row.COLUMN_NAME]));
+}
+
+function buildPersonInsert(table, existingColumns, requestedColumns) {
+  const columnNames = [];
+  const parameterNames = [];
+  const params = {};
+
+  for (const [columnName, [paramName, value]] of Object.entries(requestedColumns)) {
+    const realColumnName = existingColumns.get(columnName.toLowerCase());
+    if (!realColumnName) continue;
+    columnNames.push(realColumnName);
+    parameterNames.push(`@${paramName}`);
+    params[paramName] = value;
+  }
+
+  return {
+    sql: `INSERT INTO ${table} (${columnNames.join(", ")}) VALUES (${parameterNames.join(", ")})`,
+    params,
+  };
+}
+
+async function updateExistingProfile(table, email, profile) {
+  const columns = await getColumns(table);
+  const updates = [];
+  const params = { email };
+
+  const fields = {
+    Gender: ["gender", profile.gender],
+    Birthdate: ["birthdate", profile.birthdate],
+    Phone: ["phone", profile.phone],
+    City: ["city", profile.city],
+    Street: ["street", profile.street],
+  };
+
+  for (const [columnName, [paramName, value]] of Object.entries(fields)) {
+    const realColumnName = columns.get(columnName.toLowerCase());
+    if (!realColumnName) continue;
+    updates.push(`${realColumnName} = @${paramName}`);
+    params[paramName] = value;
+  }
+
+  if (updates.length === 0) return;
+
+  await db.query(
+    `UPDATE ${table} SET ${updates.join(", ")} WHERE Email = @email`,
+    params
+  );
+}
+
 // ── PATIENT SIGN UP ────────────────────────────────
 router.post("/signup/patient", async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, gender, birthdate, phone, city, street } = req.body;
 
-    if (!firstName || !lastName || !email || !password) {
+    if (!firstName || !lastName || !email || !password || !gender || !birthdate || !phone || !city || !street) {
       return res.status(400).json({ ok: false, message: "All fields are required." });
+    }
+    if (!validPhone(phone)) {
+      return res.status(400).json({ ok: false, message: "Phone number must be 11 digits." });
     }
 
     const exists = await db.query(
@@ -52,6 +152,7 @@ router.post("/signup/patient", async (req, res) => {
       { email }
     );
     if (exists.length > 0) {
+      await updateExistingProfile("Patient", email, { gender, birthdate, phone, city, street });
       return res.status(400).json({ ok: false, message: "Email already registered." });
     }
 
@@ -64,19 +165,14 @@ router.post("/signup/patient", async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
+      gender,
+      birthdate,
+      phone,
+      city,
+      street,
     });
 
-    await db.query(
-      `INSERT INTO Patient (Pat_id, First_name, Last_name, Email, Password)
-       VALUES (@patId, @firstName, @lastName, @email, @password)`,
-      {
-        patId: patient.id,
-        firstName: patient.firstName,
-        lastName: patient.lastName,
-        email: patient.email,
-        password: patient.password,
-      }
-    );
+    await insertPatient(patient);
 
     res.json({ ok: true, message: "Account created! You can now log in." });
   } catch (error) {
@@ -88,10 +184,14 @@ router.post("/signup/patient", async (req, res) => {
 // ── DOCTOR SIGN UP ─────────────────────────────────
 router.post("/signup/doctor", async (req, res) => {
   try {
-    const { firstName, lastName, email, password, speciality } = req.body;
+    const { firstName, lastName, email, password, gender, birthdate, phone, city, street } = req.body;
+    const speciality = req.body.specialization || req.body.speciality;
 
-    if (!firstName || !lastName || !email || !password) {
+    if (!firstName || !lastName || !email || !password || !speciality || !gender || !birthdate || !phone || !city || !street) {
       return res.status(400).json({ ok: false, message: "All fields are required." });
+    }
+    if (!validPhone(phone)) {
+      return res.status(400).json({ ok: false, message: "Phone number must be 11 digits." });
     }
 
     const exists = await db.query(
@@ -99,6 +199,7 @@ router.post("/signup/doctor", async (req, res) => {
       { email }
     );
     if (exists.length > 0) {
+      await updateExistingProfile("Doctor", email, { gender, birthdate, phone, city, street });
       return res.status(400).json({ ok: false, message: "Email already registered." });
     }
 
@@ -112,20 +213,14 @@ router.post("/signup/doctor", async (req, res) => {
       email,
       password: hashedPassword,
       speciality: speciality || null,
+      gender,
+      birthdate,
+      phone,
+      city,
+      street,
     });
 
-    await db.query(
-      `INSERT INTO Doctor (Doc_id, First_name, Last_name, Email, Password, spectiality)
-       VALUES (@docId, @firstName, @lastName, @email, @password, @speciality)`,
-      {
-        docId: doctor.id,
-        firstName: doctor.firstName,
-        lastName: doctor.lastName,
-        email: doctor.email,
-        password: doctor.password,
-        speciality: doctor.speciality,
-      }
-    );
+    await insertDoctor(doctor);
 
     res.json({ ok: true, message: "Account created! You can now log in." });
   } catch (error) {
@@ -160,7 +255,10 @@ router.post("/login", async (req, res) => {
     }
 
     const user = role === "Doctor" ? Doctor.fromRow(rows[0]) : Patient.fromRow(rows[0]);
-    const match = await bcrypt.compare(password, user.password);
+    const isHashedPassword = typeof user.password === "string" && user.password.startsWith("$2");
+    const match = isHashedPassword
+      ? await bcrypt.compare(password, user.password)
+      : password === user.password;
 
     if (!match) {
       return res.status(400).json({ ok: false, message: "Wrong password." });

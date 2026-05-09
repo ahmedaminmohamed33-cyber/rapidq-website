@@ -1,10 +1,15 @@
 class Patient {
-  constructor({ id, firstName, lastName, email, password }) {
+  constructor({ id, firstName, lastName, email, password, gender, birthdate, phone, city, street }) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
     this.password = password;
+    this.gender = gender;
+    this.birthdate = birthdate;
+    this.phone = phone;
+    this.city = city;
+    this.street = street;
   }
 
   static fromRow(row) {
@@ -14,12 +19,17 @@ class Patient {
       lastName: row.Last_name,
       email: row.Email,
       password: row.Password,
+      gender: row.Gender,
+      birthdate: row.Birthdate,
+      phone: row.Phone,
+      city: row.City,
+      street: row.Street,
     });
   }
 }
 
 class Doctor {
-  constructor({ id, firstName, lastName, email, password, speciality, rating }) {
+  constructor({ id, firstName, lastName, email, password, speciality, rating, gender, birthdate, phone, city, street }) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -27,6 +37,11 @@ class Doctor {
     this.password = password;
     this.speciality = speciality;
     this.rating = rating;
+    this.gender = gender;
+    this.birthdate = birthdate;
+    this.phone = phone;
+    this.city = city;
+    this.street = street;
   }
 
   static fromRow(row) {
@@ -38,6 +53,11 @@ class Doctor {
       password: row.Password,
       speciality: row.speciality || row.spectiality,
       rating: row.rating,
+      gender: row.Gender,
+      birthdate: row.Birthdate,
+      phone: row.Phone,
+      city: row.City,
+      street: row.Street,
     });
   }
 

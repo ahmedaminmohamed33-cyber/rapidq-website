@@ -33,6 +33,8 @@ class API {
   book(body)               { return this.send("POST", "/booking/book",           body); }
   getQueue(appId)          { return this.send("GET",  `/booking/queue?appId=${appId}`); }
   cancelBooking(body)      { return this.send("POST", "/booking/cancel",         body); }
+  getDoctorToday(docId)    { return this.send("GET",  `/booking/doctor/today?docId=${docId}`); }
+  nextPatient(body)        { return this.send("POST", "/booking/doctor/next",    body); }
   pay(body)                { return this.send("POST", "/payment/pay",            body); }
   getDoctors()             { return this.send("GET",  "/queue/doctors"); }
   getClinics()             { return this.send("GET",  "/queue/clinics"); }
@@ -49,6 +51,7 @@ class Auth {
     localStorage.removeItem("user");
     localStorage.removeItem("appId");
     localStorage.removeItem("bookedDoctor");
+    localStorage.removeItem("bookedDoctorId");
   }
   static isLoggedIn()  { return !!localStorage.getItem("token"); }
   static getUser()     { return JSON.parse(localStorage.getItem("user")); }
@@ -100,7 +103,7 @@ class LoginPage {
       const { ok, data } = await new API().login({ email, password, role });
       if (ok) {
         Auth.save(data.token, data.user);
-        window.location.href = "Home.html";
+        window.location.href = data.user.role === "Doctor" ? "DoctorHome.html" : "Home.html";
       } else {
         alert(data.message);
       }
@@ -127,7 +130,7 @@ class SignUpPage {
     window.showDoctor = () => {
       role = "Doctor";
       document.getElementById("extra").innerHTML =
-        '<input id="specialization" type="text" placeholder="Enter your specialization" required style="width:100%;padding:18px 25px;border:none;border-radius:50px;background:#fff;font-size:15px;outline:none;">';
+        '<input id="specialization" type="text" placeholder="Enter your specialization" required>';
     };
 
     form.addEventListener("submit", async (e) => {
@@ -139,8 +142,14 @@ class SignUpPage {
       const email     = document.getElementById("email").value.trim();
       const password  = document.getElementById("password").value.trim();
       const confirm   = document.getElementById("confirm").value.trim();
+      const gender    = document.getElementById("gender").value;
+      const birthdate = document.getElementById("birthdate").value;
+      const phone     = document.getElementById("phone").value.trim();
+      const city      = document.getElementById("city").value.trim();
+      const street    = document.getElementById("street").value.trim();
 
       if (password !== confirm) return alert("Passwords do not match!");
+      if (!/^\d{11}$/.test(phone)) return alert("Phone number must be 11 digits.");
 
       try {
         if (submitBtn) {
@@ -152,10 +161,10 @@ class SignUpPage {
         let result;
 
         if (role === "Doctor") {
-          const speciality = document.getElementById("specialization")?.value.trim();
-          result = await api.signupDoctor({ firstName, lastName, email, password, speciality });
+          const specialization = document.getElementById("specialization")?.value.trim();
+          result = await api.signupDoctor({ firstName, lastName, email, password, specialization, gender, birthdate, phone, city, street });
         } else {
-          result = await api.signupPatient({ firstName, lastName, email, password });
+          result = await api.signupPatient({ firstName, lastName, email, password, gender, birthdate, phone, city, street });
         }
 
         alert(result.data.message || "Signup request finished.");
@@ -195,6 +204,80 @@ class ForgotPage {
         window.location.href = "LogIn.html";
       }
     };
+  }
+}
+
+class DoctorHomePage {
+  constructor() {
+    if (!window.location.href.includes("DoctorHome")) return;
+    Auth.requireLogin();
+
+    const user = Auth.getUser();
+    if (!user || user.role !== "Doctor") {
+      window.location.href = "Home.html";
+      return;
+    }
+
+    this.user = user;
+    this.doctorName = document.getElementById("doctorName");
+    this.totalBooked = document.getElementById("totalBooked");
+    this.waitingCount = document.getElementById("waitingCount");
+    this.finishedCount = document.getElementById("finishedCount");
+    this.currentPatient = document.getElementById("currentPatient");
+    this.queueList = document.getElementById("queueList");
+    this.message = document.getElementById("dashboardMessage");
+
+    if (this.doctorName) this.doctorName.textContent = `Dr. ${user.firstName}`;
+
+    document.getElementById("nextPatientBtn")?.addEventListener("click", () => this.nextPatient());
+    document.getElementById("refreshDashboardBtn")?.addEventListener("click", () => this.load());
+    document.getElementById("doctorLogoutBtn")?.addEventListener("click", () => {
+      Auth.clear();
+      window.location.href = "LogIn.html";
+    });
+
+    this.load();
+  }
+
+  async load() {
+    const { ok, data } = await new API().getDoctorToday(this.user.id);
+    if (!ok) {
+      this.message.textContent = data.message || "Could not load today's queue.";
+      return;
+    }
+    this.updateUI(data.dashboard);
+  }
+
+  updateUI(dashboard) {
+    this.totalBooked.textContent = dashboard.totalBooked;
+    this.waitingCount.textContent = dashboard.waitingCount;
+    this.finishedCount.textContent = dashboard.finishedCount;
+
+    if (dashboard.currentPatient) {
+      this.currentPatient.innerHTML = `
+        <strong>#${dashboard.currentPatient.queueNumber} - ${dashboard.currentPatient.name}</strong>
+        <span>${dashboard.currentPatient.phone}</span>
+      `;
+    } else {
+      this.currentPatient.textContent = "No waiting patients right now.";
+    }
+
+    if (dashboard.appointments.length === 0) {
+      this.queueList.innerHTML = '<li>No appointments booked for today.</li>';
+    } else {
+      this.queueList.innerHTML = dashboard.appointments.map(item => `
+        <li>
+          <span>#${item.queueNumber} - ${item.patientName}</span>
+          <strong>${item.status}</strong>
+        </li>
+      `).join("");
+    }
+  }
+
+  async nextPatient() {
+    const { ok, data } = await new API().nextPatient({ docId: this.user.id });
+    this.message.textContent = data.message || "";
+    if (ok && data.dashboard) this.updateUI(data.dashboard);
   }
 }
 
@@ -356,6 +439,7 @@ new HomePage();
 new LoginPage();
 new SignUpPage();
 new ForgotPage();
+new DoctorHomePage();
 new BookingPage();
 new PaymentPage();
 new TrackingPage();

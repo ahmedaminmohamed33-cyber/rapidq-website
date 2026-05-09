@@ -5,6 +5,48 @@ const { Appointment, QueueEntry } = require("../models");
 
 const AVG_TIME = 10; // minutes per patient
 
+async function getDoctorToday(docId) {
+  const rows = await db.query(
+    `SELECT q.Que_id, q.App_id, q.Number, q.Status AS QueueStatus,
+            a.Time, a.Status AS AppointmentStatus,
+            p.First_name, p.Last_name, p.Phone
+     FROM Appointment a
+     JOIN Queue q ON q.App_id = a.App_id
+     JOIN Patient p ON p.Pat_id = a.Pat_id
+     WHERE a.Doc_id = @docId
+       AND CAST(a.Date AS date) = CAST(GETDATE() AS date)
+       AND a.Status <> 'Cancelled'
+     ORDER BY q.Number`,
+    { docId }
+  );
+
+  const waiting = rows.filter(row => row.QueueStatus === "Waiting");
+  const finished = rows.filter(row => row.QueueStatus === "Finished");
+  const current = waiting[0] || null;
+
+  return {
+    totalBooked: rows.length,
+    waitingCount: waiting.length,
+    finishedCount: finished.length,
+    currentPatient: current ? {
+      queueNumber: current.Number,
+      appId: current.App_id,
+      name: `${current.First_name} ${current.Last_name}`,
+      phone: current.Phone || "Not added",
+      time: current.Time,
+      status: current.QueueStatus,
+    } : null,
+    appointments: rows.map(row => ({
+      queueNumber: row.Number,
+      appId: row.App_id,
+      patientName: `${row.First_name} ${row.Last_name}`,
+      phone: row.Phone || "Not added",
+      time: row.Time,
+      status: row.QueueStatus,
+    })),
+  };
+}
+
 router.post("/book", async (req, res) => {
   try {
     const token = req.headers["authorization"];
@@ -169,6 +211,66 @@ router.post("/cancel", async (req, res) => {
   } catch (error) {
     console.error("Cancel booking error:", error.message);
     res.status(500).json({ ok: false, message: "Could not cancel booking." });
+  }
+});
+
+router.get("/doctor/today", async (req, res) => {
+  try {
+    const { docId } = req.query;
+
+    if (!docId) {
+      return res.status(400).json({ ok: false, message: "Doctor ID required." });
+    }
+
+    const dashboard = await getDoctorToday(docId);
+    res.json({ ok: true, dashboard });
+  } catch (error) {
+    console.error("Doctor dashboard error:", error.message);
+    res.status(500).json({ ok: false, message: "Could not load doctor's queue." });
+  }
+});
+
+router.post("/doctor/next", async (req, res) => {
+  try {
+    const { docId } = req.body;
+
+    if (!docId) {
+      return res.status(400).json({ ok: false, message: "Doctor ID required." });
+    }
+
+    const nextRows = await db.query(
+      `SELECT TOP 1 q.Que_id, q.App_id
+       FROM Appointment a
+       JOIN Queue q ON q.App_id = a.App_id
+       WHERE a.Doc_id = @docId
+         AND CAST(a.Date AS date) = CAST(GETDATE() AS date)
+         AND q.Status = 'Waiting'
+         AND a.Status <> 'Cancelled'
+       ORDER BY q.Number`,
+      { docId }
+    );
+
+    if (nextRows.length === 0) {
+      const dashboard = await getDoctorToday(docId);
+      return res.json({ ok: true, message: "No waiting patients today.", dashboard });
+    }
+
+    const nextPatient = nextRows[0];
+
+    await db.query(
+      "UPDATE Queue SET Status = 'Finished' WHERE Que_id = @queueId",
+      { queueId: nextPatient.Que_id }
+    );
+    await db.query(
+      "UPDATE Appointment SET Status = 'Finished' WHERE App_id = @appId",
+      { appId: nextPatient.App_id }
+    );
+
+    const dashboard = await getDoctorToday(docId);
+    res.json({ ok: true, message: "Moved to the next patient.", dashboard });
+  } catch (error) {
+    console.error("Next patient error:", error.message);
+    res.status(500).json({ ok: false, message: "Could not update the queue." });
   }
 });
 
